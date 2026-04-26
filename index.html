@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScholarMark – Academic Annotation Platform</title>
+  <meta name="description" content="Upload, annotate, and collaborate on academic papers with highlights, comments, and searchable annotations organized in reading lists." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">S</div>
+    <span class="logo-text">Scholar<b>Mark</b></span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" data-view="dashboard" id="nav-dashboard">
+      <span class="nav-icon">🏠</span><span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-item" data-view="library" id="nav-library">
+      <span class="nav-icon">📚</span><span>My Library</span>
+    </a>
+    <a href="#" class="nav-item" data-view="collections" id="nav-collections">
+      <span class="nav-icon">🗂️</span><span>Collections</span>
+    </a>
+    <a href="#" class="nav-item" data-view="annotations" id="nav-annotations">
+      <span class="nav-icon">✏️</span><span>Annotations</span>
+    </a>
+    <a href="#" class="nav-item" data-view="search" id="nav-search">
+      <span class="nav-icon">🔍</span><span>Search</span>
+    </a>
+    <a href="#" class="nav-item" data-view="collaborate" id="nav-collaborate">
+      <span class="nav-icon">👥</span><span>Collaborate</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-users">
+    <p class="sidebar-label">Active Users</p>
+    <div class="user-avatars" id="activeUsers"></div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="avatar" id="currentAvatar">H</div>
+    <div>
+      <p class="user-name" id="currentUserName">Harsh.</p>
+      <p class="user-role">Researcher</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main-content" id="mainContent">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    <div class="topbar-search">
+      <span>🔍</span>
+      <input type="text" id="globalSearch" placeholder="Search papers, annotations, collections…" />
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-primary" id="uploadBtn">+ Upload Paper</button>
+      <div class="notif-bell" title="Notifications">🔔<span class="notif-dot"></span></div>
+    </div>
+  </header>
+
+  <!-- VIEWS -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's an overview of your research activity.</p>
+    </div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="dash-row">
+      <div class="dash-card wide">
+        <h2>Recent Papers</h2>
+        <div class="paper-list" id="recentPapers"></div>
+      </div>
+      <div class="dash-card">
+        <h2>Recent Annotations</h2>
+        <div class="ann-feed" id="recentAnnotations"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="view-library">
+    <div class="page-header">
+      <h1>My Library</h1>
+      <p>All uploaded academic papers in one place.</p>
+    </div>
+    <div class="toolbar">
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="pdf">PDF</button>
+        <button class="filter-btn" data-filter="annotated">Annotated</button>
+        <button class="filter-btn" data-filter="recent">Recent</button>
+      </div>
+      <select id="sortSelect" class="sort-select">
+        <option value="date">Sort by Date</option>
+        <option value="title">Sort by Title</option>
+        <option value="annotations">Sort by Annotations</option>
+      </select>
+    </div>
+    <div class="papers-grid" id="papersGrid"></div>
+  </div>
+
+  <div class="view" id="view-collections">
+    <div class="page-header">
+      <h1>Collections</h1>
+      <p>Organize papers into reading lists and thematic groups.</p>
+    </div>
+    <div class="toolbar">
+      <button class="btn-primary" id="newCollectionBtn">+ New Collection</button>
+    </div>
+    <div class="collections-grid" id="collectionsGrid"></div>
+  </div>
+
+  <div class="view" id="view-annotations">
+    <div class="page-header">
+      <h1>All Annotations</h1>
+      <p>Every highlight and comment across all your papers.</p>
+    </div>
+    <div class="toolbar">
+      <div class="filter-group">
+        <button class="filter-btn active" data-ann-filter="all">All</button>
+        <button class="filter-btn" data-ann-filter="highlight">Highlights</button>
+        <button class="filter-btn" data-ann-filter="comment">Comments</button>
+        <button class="filter-btn" data-ann-filter="mine">Mine</button>
+      </div>
+    </div>
+    <div class="annotations-list" id="allAnnotations"></div>
+  </div>
+
+  <div class="view" id="view-search">
+    <div class="page-header">
+      <h1>Search</h1>
+      <p>Search across papers, annotations, and collections.</p>
+    </div>
+    <div class="search-hero">
+      <div class="search-box-large">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search for anything…" />
+        <button id="searchGo" class="btn-primary">Search</button>
+      </div>
+      <div class="search-tags" id="searchTags"></div>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <div class="view" id="view-collaborate">
+    <div class="page-header">
+      <h1>Collaborate</h1>
+      <p>Work together on papers with your research team.</p>
+    </div>
+    <div class="collab-layout">
+      <div class="collab-panel">
+        <h2>Team Members</h2>
+        <div class="team-list" id="teamList"></div>
+        <button class="btn-outline" id="inviteBtn">+ Invite Member</button>
+      </div>
+      <div class="collab-panel wide">
+        <h2>Shared Papers</h2>
+        <div class="shared-papers" id="sharedPapers"></div>
+      </div>
+      <div class="collab-panel">
+        <h2>Activity Feed</h2>
+        <div class="activity-feed" id="activityFeed"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== UPLOAD MODAL ===== -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Upload Academic Paper</h2>
+      <button class="modal-close" id="closeUpload">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📄</div>
+        <p>Drag & drop your PDF here</p>
+        <span>or</span>
+        <label class="btn-outline" for="fileInput">Browse Files</label>
+        <input type="file" id="fileInput" accept=".pdf,.txt,.doc" hidden />
+        <p class="drop-hint">Supports PDF, TXT, DOC</p>
+      </div>
+      <div class="upload-meta" id="uploadMeta" style="display:none">
+        <input type="text" id="paperTitle" placeholder="Paper title" class="meta-input" />
+        <input type="text" id="paperAuthors" placeholder="Authors (comma-separated)" class="meta-input" />
+        <input type="text" id="paperYear" placeholder="Publication year" class="meta-input" />
+        <textarea id="paperAbstract" placeholder="Abstract (optional)" class="meta-input" rows="3"></textarea>
+        <div class="tag-row">
+          <input type="text" id="paperTags" placeholder="Tags (comma-separated)" class="meta-input" />
+        </div>
+        <div class="collection-row">
+          <label>Add to Collection:</label>
+          <select id="collectionSelect" class="sort-select"></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelUpload">Cancel</button>
+      <button class="btn-primary" id="confirmUpload">Upload Paper</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAPER VIEWER MODAL ===== -->
+<div class="modal-overlay" id="viewerModal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h2 id="viewerTitle">Paper Viewer</h2>
+      <div class="viewer-actions">
+        <button class="btn-tool active" id="toolHighlight" title="Highlight">🖍 Highlight</button>
+        <button class="btn-tool" id="toolComment" title="Comment">💬 Comment</button>
+        <button class="btn-tool" id="toolBookmark" title="Bookmark">🔖 Bookmark</button>
+        <button class="modal-close" id="closeViewer">✕</button>
+      </div>
+    </div>
+    <div class="viewer-layout">
+      <div class="paper-content-area" id="paperContent"></div>
+      <aside class="annotations-panel">
+        <h3>Annotations</h3>
+        <div class="ann-filter-row">
+          <button class="mini-btn active" data-v-filter="all">All</button>
+          <button class="mini-btn" data-v-filter="highlight">Highlights</button>
+          <button class="mini-btn" data-v-filter="comment">Comments</button>
+        </div>
+        <div class="annotations-scroll" id="paperAnnotations"></div>
+        <div class="add-note-box" id="addNoteBox" style="display:none">
+          <textarea id="noteText" placeholder="Add a comment…" rows="3"></textarea>
+          <div class="note-color-row">
+            <span>Color:</span>
+            <button class="color-dot" style="background:#FFD600" data-color="#FFD600"></button>
+            <button class="color-dot" style="background:#69FFCA" data-color="#69FFCA"></button>
+            <button class="color-dot" style="background:#FF8A80" data-color="#FF8A80"></button>
+            <button class="color-dot" style="background:#82B1FF" data-color="#82B1FF"></button>
+          </div>
+          <div class="note-actions">
+            <button class="btn-outline sm" id="cancelNote">Cancel</button>
+            <button class="btn-primary sm" id="saveNote">Save</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION MODAL ===== -->
+<div class="modal-overlay" id="collectionModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 id="collModalTitle">New Collection</h2>
+      <button class="modal-close" id="closeCollection">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="collName" placeholder="Collection name" class="meta-input" />
+      <textarea id="collDesc" placeholder="Description (optional)" class="meta-input" rows="2"></textarea>
+      <div class="color-picker-row">
+        <span>Color:</span>
+        <button class="color-dot lg" style="background:#6C63FF" data-coll-color="#6C63FF"></button>
+        <button class="color-dot lg" style="background:#00C9A7" data-coll-color="#00C9A7"></button>
+        <button class="color-dot lg" style="background:#FF6584" data-coll-color="#FF6584"></button>
+        <button class="color-dot lg" style="background:#FFB347" data-coll-color="#FFB347"></button>
+        <button class="color-dot lg" style="background:#4FC3F7" data-coll-color="#4FC3F7"></button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelCollection">Cancel</button>
+      <button class="btn-primary" id="saveCollection">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INVITE MODAL ===== -->
+<div class="modal-overlay" id="inviteModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>Invite Collaborator</h2>
+      <button class="modal-close" id="closeInvite">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="inviteName" placeholder="Name" class="meta-input" />
+      <input type="email" id="inviteEmail" placeholder="Email address" class="meta-input" />
+      <select id="inviteRole" class="sort-select">
+        <option value="viewer">Viewer</option>
+        <option value="annotator">Annotator</option>
+        <option value="editor">Editor</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelInvite">Cancel</button>
+      <button class="btn-primary" id="confirmInvite">Send Invite</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
